@@ -1,5 +1,5 @@
 import { collectDefaultMetrics, Gauge } from 'prom-client';
-import { getAllProductVariations } from './woocommerce/index.js';
+import { getAllProductVariations, getOrdersCount } from './woocommerce/index.js';
 
 export async function initMetrics() {
     collectDefaultMetrics();
@@ -14,13 +14,12 @@ export async function initMetrics() {
             this.reset();
 
             try {
-                const allStatuses = [];
-                const ordersCountMap = [];
+                const ordersCount = await getOrdersCount();
 
-                for (const status of allStatuses) {
+                for (const [status, count] of Object.entries(ordersCount)) {
                     this.set({
                         status,
-                    }, ordersCountMap?.[status] ?? 0);
+                    }, count);
                 }
             }
             catch (e) {

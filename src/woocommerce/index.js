@@ -1,4 +1,4 @@
-import { listAllProducts, listAllProductVariations } from './api.js';
+import { listAllOrders, listAllProducts, listAllProductVariations } from './api.js';
 
 export async function getAllProductVariations() {
     const options = {
@@ -38,4 +38,14 @@ export async function getAllProductVariations() {
 }
 
 export async function getOrdersCount() {
+    const options = {
+        per_page: 100,
+    };
+
+    const orders = await listAllOrders(options);
+
+    return orders.reduce((prev, curr) => ({
+        ...prev,
+        [curr.status]: (prev?.[curr.status] ?? 0) + 1,
+    }), {});
 }
