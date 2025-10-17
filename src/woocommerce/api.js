@@ -31,3 +31,24 @@ export async function listAllProductVariations(productId, query = {}){
 export async function listAllOrders(query = {}) {
     return await request('/orders', query);
 }
+
+export async function pager(fn, options = {}, ...args) {
+    const per_page = 100;
+    let page = 1;
+    let count = 0;
+    const result = [];
+
+    do {
+        const pageResult = await fn(...args, {
+            ...options,
+            per_page,
+            page,
+        });
+        page++;
+        count = pageResult.length;
+        result.push(...pageResult);
+    }
+    while (count === per_page);
+
+    return result;
+}

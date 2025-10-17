@@ -1,13 +1,12 @@
-import { listAllOrders, listAllProducts, listAllProductVariations } from './api.js';
+import { listAllOrders, listAllProducts, listAllProductVariations, pager } from './api.js';
 
 export async function getAllProductVariations() {
     const options = {
         status: 'publish',
-        per_page: 100,
     };
 
     let result = [];
-    const products = await listAllProducts(options);
+    const products = await pager(listAllProducts, options);
 
     for (const product of products) {
         if (product.manage_stock) {
@@ -18,7 +17,7 @@ export async function getAllProductVariations() {
             });
         }
         else {
-            const variations = await listAllProductVariations(product.id, options);
+            const variations = await pager(listAllProductVariations, options, product.id);
 
             for (const variation of variations) {
                 if (!variation.manage_stock) {
@@ -38,11 +37,7 @@ export async function getAllProductVariations() {
 }
 
 export async function getOrdersCount() {
-    const options = {
-        per_page: 100,
-    };
-
-    const orders = await listAllOrders(options);
+    const orders = await pager(listAllOrders);
 
     return orders.reduce((prev, curr) => ({
         ...prev,
