@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import { register as promRegister } from 'prom-client';
+import { getAllProductVariations } from './woocommerce/index.js';
 
 const app = express();
 
@@ -13,6 +14,10 @@ app.get('/metrics', async function(req, res) {
     } catch (ex) {
         res.status(500).end(ex.toString());
     }
+});
+
+app.get('/productVariations', async function(req, res) {
+    res.json(await getAllProductVariations());
 });
 
 export default app;
