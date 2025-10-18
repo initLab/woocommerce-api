@@ -11,9 +11,13 @@ export async function getAllProductVariations() {
     for (const product of products) {
         if (product.manage_stock) {
             result.push({
+                id: product.id,
+                productName: product.name,
+                variationName: '',
                 name: product.name,
                 sku: product.sku,
                 stockQuantity: product.stock_quantity,
+                price: parseFloat(product.price),
             });
         }
         else {
@@ -25,9 +29,13 @@ export async function getAllProductVariations() {
                 }
 
                 result.push({
+                    id: variation.id,
+                    productName: product.name,
+                    variationName: variation.name,
                     name: `${product.name} - ${variation.name}`,
                     sku: variation.sku,
                     stockQuantity: variation.stock_quantity,
+                    price: parseFloat(variation.price),
                 });
             }
         }
